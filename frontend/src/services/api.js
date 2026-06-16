@@ -1,7 +1,16 @@
 import axios from 'axios';
 
-// ✅ Keep base URL clean — no trailing slash, no /api suffix if your routes include it
-const API_URL = import.meta.env.VITE_API_URL || 'https://skf-project-silas.onrender.com/api';
+// ✅ Resiliently normalize backend URL — ensure it ends with /api and has no trailing slash
+const getApiUrl = () => {
+  let url = import.meta.env.VITE_API_URL || 'https://skf-project-silas.onrender.com/api';
+  url = url.trim().replace(/\/$/, ''); // Remove trailing slash if present
+  if (!url.endsWith('/api')) {
+    url += '/api';
+  }
+  return url;
+};
+
+const API_URL = getApiUrl();
 
 const api = axios.create({
   baseURL: API_URL,
