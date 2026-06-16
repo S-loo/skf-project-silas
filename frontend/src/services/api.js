@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // ✅ Keep base URL clean — no trailing slash, no /api suffix if your routes include it
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8005/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://skf-project-silas.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_URL,
