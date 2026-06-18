@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard, FolderOpen, CheckSquare, Users,
   Bell, BarChart2, Settings, LogOut, Zap,
-  ChevronLeft, Menu,
+  ChevronLeft, Menu, Github,
 } from 'lucide-react';
 
 const navItems = [
@@ -14,6 +14,7 @@ const navItems = [
   { to: '/team', icon: Users, label: 'Team' },
   { to: '/notifications', icon: Bell, label: 'Notifications' },
   { to: '/analytics', icon: BarChart2, label: 'Analytics' },
+  { to: '/github-dashboard', icon: Github, label: 'Git Dashboard' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 

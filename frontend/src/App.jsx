@@ -21,6 +21,7 @@ import TeamManagement from './pages/TeamManagement';
 import Notifications from './pages/Notifications';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
+import GitHubDashboard from './pages/GitHubDashboard';
 
 function ProtectedLayout({ children, pageTitle }) {
   const { user } = useAuth();
@@ -160,6 +161,15 @@ function AppRoutes() {
         element={
           <ProtectedLayout pageTitle="Reports & Analytics">
             <Analytics />
+          </ProtectedLayout>
+        }
+      />
+
+      <Route
+        path="/github-dashboard"
+        element={
+          <ProtectedLayout pageTitle="GitHub Repository Dashboard">
+            <GitHubDashboard />
           </ProtectedLayout>
         }
       />
