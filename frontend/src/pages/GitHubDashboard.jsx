@@ -7,12 +7,8 @@ export default function GitHubDashboard() {
     <div 
       style={{ 
         width: '100%', 
-        height: 'calc(100vh - 140px)', 
+        height: 'calc(100vh - 110px)', 
         position: 'relative',
-        background: '#ffffff',
-        borderRadius: '12px',
-        border: '1px solid #D5DBDB',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
         overflow: 'hidden'
       }}
     >
@@ -27,7 +23,7 @@ export default function GitHubDashboard() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: '#ffffff',
+            background: '#F8FAFC',
             zIndex: 10
           }}
         >
@@ -42,7 +38,8 @@ export default function GitHubDashboard() {
           width: '100%', 
           height: '100%', 
           border: 'none',
-          display: 'block'
+          display: 'block',
+          background: 'transparent'
         }}
       />
     </div>
