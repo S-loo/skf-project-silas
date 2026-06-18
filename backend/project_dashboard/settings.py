@@ -136,6 +136,10 @@ vercel_url = os.getenv('FRONTEND_URL')
 if vercel_url:
     CORS_ALLOWED_ORIGINS.append(vercel_url)
 
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.vercel\.app$",
+]
+
 CORS_ALLOW_ALL_ORIGINS = DEBUG  # open only in dev
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
