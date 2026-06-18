@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,54 +8,55 @@
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
-      --bg-primary: #0d1117;
-      --bg-secondary: #161b22;
-      --bg-tertiary: #21262d;
-      --border-color: #30363d;
-      --text-primary: #c9d1d9;
-      --text-secondary: #8b949e;
-      --text-white: #ffffff;
-      --accent-color: #58a6ff;
-      --accent-hover: #1f6feb;
-      --success-color: #2ea44f;
-      --success-bg: rgba(46, 164, 79, 0.15);
-      --danger-color: #f85149;
-      --danger-bg: rgba(248, 81, 73, 0.15);
-      --warning-color: #d29922;
-      --warning-bg: rgba(210, 153, 34, 0.15);
+      --bg-primary: #16191F;
+      --bg-secondary: #232F3E;
+      --bg-tertiary: #2B3846;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-primary: #FFFFFF;
+      --text-secondary: #B0BAC4;
+      --text-white: #FFFFFF;
+      --accent-color: #FF9900;
+      --accent-hover: #E88A00;
+      --success-color: #1D8102;
+      --success-bg: rgba(29, 129, 2, 0.15);
+      --danger-color: #D13212;
+      --danger-bg: rgba(209, 50, 18, 0.15);
+      --warning-color: #E88A00;
+      --warning-bg: rgba(232, 138, 0, 0.15);
       --purple-color: #bc8cff;
       --purple-bg: rgba(188, 140, 255, 0.15);
-      --glass-bg: rgba(22, 27, 34, 0.8);
+      --glass-bg: rgba(35, 47, 62, 0.8);
       --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     }
 
     /* Light Theme variables */
     .light-theme {
-      --bg-primary: #f6f8fa;
-      --bg-secondary: #ffffff;
-      --bg-tertiary: #f0f2f5;
-      --border-color: #d0d7de;
-      --text-primary: #24292f;
-      --text-secondary: #57606a;
-      --text-white: #09090b;
-      --accent-color: #0969da;
-      --accent-hover: #0550ae;
-      --success-color: #1a7f37;
-      --success-bg: rgba(26, 127, 55, 0.1);
-      --danger-color: #cf222e;
-      --danger-bg: rgba(207, 34, 46, 0.1);
-      --warning-color: #9a6700;
-      --warning-bg: rgba(154, 103, 0, 0.1);
-      --purple-color: #8250df;
-      --purple-bg: rgba(130, 80, 223, 0.1);
+      --bg-primary: #F8FAFC;
+      --bg-secondary: #FFFFFF;
+      --bg-tertiary: #F0F3F4;
+      --border-color: #D5DBDB;
+      --text-primary: #16191F;
+      --text-secondary: #5F6B7A;
+      --text-white: #16191F;
+      --accent-color: #FF9900;
+      --accent-hover: #E88A00;
+      --success-color: #1D8102;
+      --success-bg: rgba(29, 129, 2, 0.1);
+      --danger-color: #D13212;
+      --danger-bg: rgba(209, 50, 18, 0.1);
+      --warning-color: #E88A00;
+      --warning-bg: rgba(232, 138, 0, 0.1);
+      --purple-color: #bc8cff;
+      --purple-bg: rgba(188, 140, 255, 0.15);
       --glass-bg: rgba(255, 255, 255, 0.8);
       --shadow: 0 8px 32px 0 rgba(140, 149, 159, 0.15);
     }
@@ -110,8 +112,15 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95) translateY(10px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
 
     .setup-logo {
@@ -332,9 +341,17 @@
       opacity: 0.8;
     }
 
-    .metric-card.success::after { background: var(--success-color); }
-    .metric-card.danger::after { background: var(--danger-color); }
-    .metric-card.warning::after { background: var(--warning-color); }
+    .metric-card.success::after {
+      background: var(--success-color);
+    }
+
+    .metric-card.danger::after {
+      background: var(--danger-color);
+    }
+
+    .metric-card.warning::after {
+      background: var(--warning-color);
+    }
 
     .metric-content h3 {
       font-size: 13px;
@@ -359,10 +376,25 @@
       justify-content: center;
     }
 
-    .metric-card.accent .metric-icon-box { background-color: rgba(88, 166, 255, 0.15); color: var(--accent-color); }
-    .metric-card.success .metric-icon-box { background-color: var(--success-bg); color: var(--success-color); }
-    .metric-card.danger .metric-icon-box { background-color: var(--danger-bg); color: var(--danger-color); }
-    .metric-card.warning .metric-icon-box { background-color: var(--warning-bg); color: var(--warning-color); }
+    .metric-card.accent .metric-icon-box {
+      background-color: rgba(88, 166, 255, 0.15);
+      color: var(--accent-color);
+    }
+
+    .metric-card.success .metric-icon-box {
+      background-color: var(--success-bg);
+      color: var(--success-color);
+    }
+
+    .metric-card.danger .metric-icon-box {
+      background-color: var(--danger-bg);
+      color: var(--danger-color);
+    }
+
+    .metric-card.warning .metric-icon-box {
+      background-color: var(--warning-bg);
+      color: var(--warning-color);
+    }
 
     /* Dashboard Layout Grid */
     .dashboard-grid {
@@ -377,7 +409,8 @@
       }
     }
 
-    .left-column, .right-column {
+    .left-column,
+    .right-column {
       display: flex;
       flex-direction: column;
       gap: 24px;
@@ -438,7 +471,8 @@
       transition: background-color 0.2s, color 0.2s, border-color 0.2s;
     }
 
-    .chip:hover, .chip.active {
+    .chip:hover,
+    .chip.active {
       background-color: var(--accent-color);
       color: var(--bg-primary);
       border-color: var(--accent-color);
@@ -484,13 +518,16 @@
       width: 6px;
       height: 6px;
     }
+
     ::-webkit-scrollbar-track {
       background: var(--bg-primary);
     }
+
     ::-webkit-scrollbar-thumb {
       background: var(--border-color);
       border-radius: 3px;
     }
+
     ::-webkit-scrollbar-thumb:hover {
       background: var(--text-secondary);
     }
@@ -533,9 +570,17 @@
       margin-top: 6px;
     }
 
-    .item-status-dot.open { background-color: var(--success-color); }
-    .item-status-dot.closed { background-color: var(--danger-color); }
-    .item-status-dot.merged { background-color: var(--purple-color); }
+    .item-status-dot.open {
+      background-color: var(--success-color);
+    }
+
+    .item-status-dot.closed {
+      background-color: var(--danger-color);
+    }
+
+    .item-status-dot.merged {
+      background-color: var(--purple-color);
+    }
 
     .item-info {
       min-width: 0;
@@ -588,9 +633,20 @@
       text-transform: capitalize;
     }
 
-    .state-badge.open { background-color: var(--success-bg); color: var(--success-color); }
-    .state-badge.closed { background-color: var(--danger-bg); color: var(--danger-color); }
-    .state-badge.merged { background-color: var(--purple-bg); color: var(--purple-color); }
+    .state-badge.open {
+      background-color: var(--success-bg);
+      color: var(--success-color);
+    }
+
+    .state-badge.closed {
+      background-color: var(--danger-bg);
+      color: var(--danger-color);
+    }
+
+    .state-badge.merged {
+      background-color: var(--purple-bg);
+      color: var(--purple-color);
+    }
 
     /* Milestones progress elements */
     .milestone-item {
@@ -688,9 +744,20 @@
       flex-shrink: 0;
     }
 
-    .workflow-status-icon.success { background-color: var(--success-bg); color: var(--success-color); }
-    .workflow-status-icon.failure { background-color: var(--danger-bg); color: var(--danger-color); }
-    .workflow-status-icon.in-progress { background-color: var(--warning-bg); color: var(--warning-color); }
+    .workflow-status-icon.success {
+      background-color: var(--success-bg);
+      color: var(--success-color);
+    }
+
+    .workflow-status-icon.failure {
+      background-color: var(--danger-bg);
+      color: var(--danger-color);
+    }
+
+    .workflow-status-icon.in-progress {
+      background-color: var(--warning-bg);
+      color: var(--warning-color);
+    }
 
     .workflow-text {
       min-width: 0;
@@ -736,8 +803,13 @@
     }
 
     @keyframes loading-skeleton {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
     }
 
     /* Toast notification */
@@ -766,6 +838,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- Toast message container -->
@@ -782,7 +855,7 @@
       </div>
       <h2>Connect Repository</h2>
       <p>Configure your GitHub repository details and Personal Access Token (PAT) to load the dashboard.</p>
-      
+
       <form id="setup-form" onsubmit="handleSetup(event)">
         <div class="form-group">
           <label for="owner">GitHub Owner / Organization</label>
@@ -814,7 +887,8 @@
         <div class="repo-details">
           <h1 id="header-repo-title">
             <span id="display-owner">Owner</span> / <span id="display-repo">Repo</span>
-            <span id="status-badge" style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: var(--bg-tertiary); color: var(--text-secondary); font-weight: 500;">Connecting...</span>
+            <span id="status-badge"
+              style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: var(--bg-tertiary); color: var(--text-secondary); font-weight: 500;">Connecting...</span>
           </h1>
           <p>Real-time repository health and activity metrics</p>
         </div>
@@ -828,7 +902,8 @@
           <i id="refresh-icon" data-lucide="refresh-cw" size="16"></i>
           <span>Refresh</span>
         </button>
-        <button class="text-btn" onclick="disconnectRepo()" style="border-color: var(--danger-color); color: var(--danger-color)">
+        <button class="text-btn" onclick="disconnectRepo()"
+          style="border-color: var(--danger-color); color: var(--danger-color)">
           <i data-lucide="log-out" size="16"></i>
           <span>Disconnect</span>
         </button>
@@ -993,7 +1068,7 @@
     let cachedCommits = [];
     let cachedMilestones = [];
     let cachedRuns = [];
-    
+
     let issueFilter = 'all';
     let prFilter = 'all';
     let refreshInterval = null;
@@ -1032,7 +1107,7 @@
     function toggleTheme() {
       const isLight = document.body.classList.toggle('light-theme');
       localStorage.setItem('theme', isLight ? 'light' : 'dark');
-      
+
       const themeIcon = document.getElementById('theme-icon');
       themeIcon.setAttribute('data-lucide', isLight ? 'sun' : 'moon');
       lucide.createIcons();
@@ -1051,7 +1126,7 @@
     // Handle initial setup form submission
     function handleSetup(event) {
       event.preventDefault();
-      
+
       const owner = document.getElementById('owner').value.trim();
       const repo = document.getElementById('repo').value.trim();
       const token = document.getElementById('pat').value.trim();
@@ -1068,7 +1143,7 @@
       document.getElementById('setup-screen').classList.add('hidden');
       document.getElementById('app-container').classList.add('visible');
       updateHeaderDisplay(owner, repo);
-      
+
       showToast('Connecting to GitHub...');
       loadDashboardData();
       startAutoRefresh();
@@ -1081,7 +1156,7 @@
       sessionStorage.removeItem('gh_repo');
 
       stopAutoRefresh();
-      
+
       // Clear charts and cache
       if (commitChartInstance) {
         commitChartInstance.destroy();
@@ -1181,7 +1256,7 @@
         console.error(err);
         setHeaderStatus('Error', 'danger');
         showToast(`Failed to load data: ${err.message}`);
-        
+
         // If credentials invalid, return to login after delay
         if (err.message.includes('denied') || err.message.includes('missing')) {
           setTimeout(() => {
@@ -1215,7 +1290,7 @@
       const openIssuesCount = cachedIssues.filter(i => i.state === 'open').length;
       const openPrsCount = cachedPulls.filter(p => p.state === 'open').length;
       const activeMilestonesCount = cachedMilestones.filter(m => m.state === 'open').length;
-      
+
       // Calculate CI success rate from last 30 runs
       const completedRuns = cachedRuns.filter(r => r.status === 'completed');
       let passRate = 100;
@@ -1236,7 +1311,7 @@
       listKeys.forEach(id => {
         const container = document.getElementById(id);
         if (!container) return;
-        
+
         let skeletonHtml = '';
         for (let i = 0; i < 3; i++) {
           skeletonHtml += `
@@ -1271,7 +1346,7 @@
     function renderIssues() {
       const container = document.getElementById('issues-list');
       const searchQuery = document.getElementById('issue-search').value.toLowerCase();
-      
+
       let filtered = cachedIssues;
 
       // Filter by state chip
@@ -1301,7 +1376,7 @@
         const assigneeAvatar = item.assignee ? `<img src="${item.assignee.avatar_url}" class="assignee-avatar" title="${item.assignee.login}"/>` : '';
         const dateStr = item.state === 'open' ? `opened ${timeAgo(item.created_at)}` : `closed ${timeAgo(item.closed_at)}`;
         const stateColor = item.state === 'open' ? 'open' : 'closed';
-        
+
         return `
           <a href="${item.html_url}" target="_blank" class="list-item">
             <div class="item-main">
@@ -1323,7 +1398,7 @@
           </a>
         `;
       }).join('');
-      
+
       lucide.createIcons();
     }
 
@@ -1343,7 +1418,7 @@
     function renderPRs() {
       const container = document.getElementById('prs-list');
       const searchQuery = document.getElementById('pr-search').value.toLowerCase();
-      
+
       let filtered = cachedPulls;
 
       // Filter by state chip
@@ -1404,7 +1479,7 @@
     // Render Workflow Runs
     function renderWorkflows() {
       const container = document.getElementById('workflows-list');
-      
+
       if (cachedRuns.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
@@ -1430,7 +1505,7 @@
       container.innerHTML = uniqueRuns.map(run => {
         let statusClass = 'in-progress';
         let statusIcon = 'refresh-cw';
-        
+
         if (run.status === 'completed') {
           if (run.conclusion === 'success') {
             statusClass = 'success';
@@ -1564,11 +1639,11 @@
     // Render Commit Frequency Chart (Chart.js)
     function renderCommitChart(commits) {
       const ctx = document.getElementById('commitChart').getContext('2d');
-      
+
       // Calculate commit frequencies for the last 14 days
       const days = [];
       const counts = [];
-      
+
       for (let i = 13; i >= 0; i--) {
         const d = new Date();
         d.setDate(d.getDate() - i);
@@ -1592,10 +1667,10 @@
       }
 
       const isLightTheme = document.body.classList.contains('light-theme');
-      const primaryTextColor = isLightTheme ? '#57606a' : '#8b949e';
-      const gridColor = isLightTheme ? '#d0d7de' : '#30363d';
-      const barColor = isLightTheme ? '#0969da' : '#58a6ff';
-      const hoverBarColor = isLightTheme ? '#0550ae' : '#1f6feb';
+      const primaryTextColor = isLightTheme ? '#5F6B7A' : '#B0BAC4';
+      const gridColor = isLightTheme ? '#D5DBDB' : 'rgba(255, 255, 255, 0.08)';
+      const barColor = '#FF9900';
+      const hoverBarColor = '#E88A00';
 
       commitChartInstance = new Chart(ctx, {
         type: 'bar',
@@ -1632,10 +1707,10 @@
             },
             y: {
               grid: { color: gridColor },
-              ticks: { 
-                color: primaryTextColor, 
+              ticks: {
+                color: primaryTextColor,
                 stepSize: 1,
-                font: { family: 'Inter', size: 10 } 
+                font: { family: 'Inter', size: 10 }
               },
               beginAtZero: true
             }
@@ -1660,7 +1735,7 @@
     // Helper: HTML escaping to prevent XSS
     function escapeHTML(str) {
       if (!str) return '';
-      return str.replace(/[&<>'"]/g, 
+      return str.replace(/[&<>'"]/g,
         tag => ({
           '&': '&amp;',
           '<': '&lt;',
@@ -1672,4 +1747,5 @@
     }
   </script>
 </body>
+
 </html>
