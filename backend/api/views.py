@@ -488,6 +488,33 @@ class TeamListView(APIView):
         member.save()
         return Response(member.to_dict(), status=status.HTTP_200_OK)
 
+class TeamMemberDetailView(APIView):
+    def delete(self, request, pk):
+        check_permission(request.user, ['admin', 'project_manager'])
+        try:
+            member = TeamMember.objects.get(id=pk)
+        except Exception:
+            return Response({'error': 'Team member not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        if member.user and member.user.id == request.user.id:
+            return Response({'error': 'You cannot delete yourself.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Unassign member's tasks
+        Task.objects(assigned_to=member).update(assigned_to=None)
+
+        # Remove member from any projects
+        for project in Project.objects(team_members=member):
+            project.team_members = [m for m in project.team_members if m != member]
+            project.save()
+
+        # Delete associated user if exists
+        if member.user:
+            member.user.delete()
+
+        # Delete the team member document
+        member.delete()
+        return Response({'success': True}, status=status.HTTP_200_OK)
+
 # ================= NOTIFICATION VIEWS =================
 
 class NotificationListView(APIView):

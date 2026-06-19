@@ -31,6 +31,7 @@ export const dataService = {
   team: {
     list: () => api.get('/team/'),
     update: (data) => api.post('/team/', data),
+    delete: (id) => api.delete(`/team/${id}/`),
   },
 
   // --- Notifications ---

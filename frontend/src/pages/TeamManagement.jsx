@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { dataService } from '../services/dataService';
-import { Users, Briefcase, CheckCircle, AlertCircle } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { Users, Briefcase, CheckCircle, AlertCircle, Trash2 } from 'lucide-react';
 
 export default function TeamManagement() {
+  const { user } = useAuth();
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const canManage = ['admin', 'project_manager'].includes(user?.role);
 
   useEffect(() => {
     dataService.team
@@ -12,6 +17,18 @@ export default function TeamManagement() {
       .then(res => setMembers(res.data))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleDelete = (id) => {
+    if (!window.confirm('Are you sure you want to remove this member? This will delete their account, unassign their tasks, and remove them from all projects.')) return;
+    setError('');
+    dataService.team.delete(id)
+      .then(() => {
+        setMembers(prev => prev.filter(m => m.id !== id));
+      })
+      .catch(err => {
+        setError(err.response?.data?.error || 'Failed to delete member.');
+      });
+  };
 
   const getWorkloadColor = (score) => {
     if (score > 7) return '#D13212';
@@ -39,6 +56,12 @@ export default function TeamManagement() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {error && (
+        <div style={{ padding: '12px 16px', background: '#FDECEA', border: '1px solid #F5C6C0', borderRadius: 4, fontSize: 13, color: '#D13212', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>{error}</span>
+          <button onClick={() => setError('')} className="btn btn-ghost btn-sm" style={{ padding: 2, minWidth: 'auto', color: '#D13212' }}>X</button>
+        </div>
+      )}
 
       {/* STATS */}
       <div
@@ -97,6 +120,7 @@ export default function TeamManagement() {
                   <th>Skills</th>
                   <th>Workload</th>
                   <th>Status</th>
+                  {canManage && <th style={{ width: 80 }}>Actions</th>}
                 </tr>
               </thead>
 
@@ -254,6 +278,24 @@ export default function TeamManagement() {
                           {m.status}
                         </span>
                       </td>
+
+                      {/* ACTIONS */}
+                      {canManage && (
+                        <td>
+                          {m.user?.id !== user?.id ? (
+                            <button
+                              onClick={() => handleDelete(m.id)}
+                              className="btn btn-ghost btn-sm"
+                              style={{ color: '#D13212', padding: 4 }}
+                              title="Delete Member"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          ) : (
+                            <span style={{ fontSize: 11, color: '#5F6B7A', fontStyle: 'italic' }}>You</span>
+                          )}
+                        </td>
+                      )}
 
                     </tr>
                   );

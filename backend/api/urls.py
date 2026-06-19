@@ -20,6 +20,7 @@ urlpatterns = [
 
     # Team
     path('team/', views.TeamListView.as_view(), name='team-list'),
+    path('team/<str:pk>/', views.TeamMemberDetailView.as_view(), name='team-member-detail'),
 
     # Notifications
     path('notifications/', views.NotificationListView.as_view(), name='notification-list'),
