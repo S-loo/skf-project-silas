@@ -191,3 +191,36 @@ class ActivityLog(Document):
             'details': self.details,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
+
+class ProjectComment(Document):
+    meta = {'collection': 'project_comments'}
+    
+    project = ReferenceField(Project, required=True)
+    author = ReferenceField(User, required=False)  # Null for system messages
+    message = StringField(required=True)
+    parent = ReferenceField('self', default=None)
+    is_system = BooleanField(default=False)
+    created_at = DateTimeField(default=datetime.utcnow)
+    updated_at = DateTimeField(default=datetime.utcnow)
+
+    def to_dict(self):
+        author_dict = None
+        try:
+            if self.author:
+                author_dict = self.author.to_dict()
+        except Exception:
+            pass
+
+        parent_id = str(self.parent.id) if self.parent else None
+
+        return {
+            'id': str(self.id),
+            'project_id': str(self.project.id),
+            'author': author_dict,
+            'message': self.message,
+            'parent_id': parent_id,
+            'is_system': self.is_system,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }
+

@@ -10,6 +10,8 @@ urlpatterns = [
     # Projects
     path('projects/', views.ProjectListCreateView.as_view(), name='project-list-create'),
     path('projects/<str:pk>/', views.ProjectDetailView.as_view(), name='project-detail'),
+    path('projects/<str:project_id>/comments/', views.ProjectCommentListView.as_view(), name='project-comments'),
+    path('comments/<str:pk>/', views.CommentDetailView.as_view(), name='comment-detail'),
 
     # Tasks
     path('tasks/', views.TaskListCreateView.as_view(), name='task-list-create'),

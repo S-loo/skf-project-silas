@@ -43,4 +43,12 @@ export const dataService = {
   analytics: {
     overview: () => api.get('/analytics/overview/'),
   },
+
+  // --- Project Discussion ---
+  comments: {
+    list: (projectId) => api.get(`/projects/${projectId}/comments/`),
+    create: (projectId, data) => api.post(`/projects/${projectId}/comments/`, data),
+    update: (commentId, data) => api.put(`/comments/${commentId}/`, data),
+    delete: (commentId) => api.delete(`/comments/${commentId}/`),
+  },
 };

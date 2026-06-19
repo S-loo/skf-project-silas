@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.exceptions import PermissionDenied, NotFound
 
-from api.models import User, TeamMember, Project, Task, Notification, ActivityLog
+from api.models import User, TeamMember, Project, Task, Notification, ActivityLog, ProjectComment
 from api.authentication import generate_tokens, decode_refresh_token
 
 def check_permission(user, allowed_roles):
@@ -200,6 +200,8 @@ class ProjectDetailView(APIView):
     def put(self, request, pk):
         check_permission(request.user, ['admin', 'project_manager'])
         project = self.get_object(pk)
+        old_status = project.status
+        old_deadline = project.deadline
 
         name = request.data.get('name')
         if name:
@@ -237,6 +239,21 @@ class ProjectDetailView(APIView):
 
         project.save()
         update_project_progress(project)
+
+        actor = f"{request.user.first_name} {request.user.last_name}"
+        # System comment: status change
+        if 'status' in request.data and project.status != old_status:
+            create_system_comment(
+                project,
+                f"🔄 Project status changed from **{old_status}** to **{project.status}** by {actor}."
+            )
+        # System comment: deadline change
+        if deadline_str and old_deadline and project.deadline != old_deadline:
+            create_system_comment(
+                project,
+                f"📅 Project deadline updated to **{project.deadline.strftime('%b %d, %Y')}** by {actor}."
+            )
+
         return Response(project.to_dict(), status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
@@ -315,6 +332,13 @@ class TaskListCreateView(APIView):
                 type='assignment'
             ).save()
 
+        # System comment: task created
+        assignee_name = f"{assignee.user.first_name} {assignee.user.last_name}" if assignee and assignee.user else "Unassigned"
+        create_system_comment(
+            proj,
+            f"✅ Task **\"{title}\"** was created and assigned to **{assignee_name}**."
+        )
+
         return Response(task.to_dict(), status=status.HTTP_201_CREATED)
 
 class TaskDetailView(APIView):
@@ -354,6 +378,7 @@ class TaskDetailView(APIView):
             else:
                 task.assigned_to = None
 
+        old_status_before_save = task.status
         task.save()
         
         # Update metrics
@@ -371,6 +396,35 @@ class TaskDetailView(APIView):
                     message=f"You have been assigned to task: '{task.title}' under project '{task.project.name}'.",
                     type='assignment'
                 ).save()
+            # System comment: assignee changed
+            new_name = f"{task.assigned_to.user.first_name} {task.assigned_to.user.last_name}" if task.assigned_to.user else "Unknown"
+            create_system_comment(
+                task.project,
+                f"👤 Task **\"{task.title}\"** was reassigned to **{new_name}**."
+            )
+
+        # System comment: status changed
+        if 'status' in request.data:
+            new_status = request.data.get('status')
+            if new_status != old_status_before_save:
+                if new_status == 'completed':
+                    create_system_comment(
+                        task.project,
+                        f"🎉 Task **\"{task.title}\"** was marked as **Completed**."
+                    )
+                else:
+                    label = new_status.replace('_', ' ').title()
+                    create_system_comment(
+                        task.project,
+                        f"🔄 Task **\"{task.title}\"** status changed to **{label}**."
+                    )
+
+        # System comment: due date changed
+        if due_date_str:
+            create_system_comment(
+                task.project,
+                f"📅 Deadline for task **\"{task.title}\"** was updated to **{task.due_date.strftime('%b %d, %Y')}**."
+            )
 
         return Response(task.to_dict(), status=status.HTTP_200_OK)
 
@@ -588,3 +642,92 @@ class AnalyticsOverviewView(APIView):
             'recent_activities': recent_activities,
             'reminders': reminders
         }, status=status.HTTP_200_OK)
+
+# ================= DISCUSSION / COMMENTS VIEWS =================
+
+def create_system_comment(project, message):
+    try:
+        comment = ProjectComment(
+            project=project,
+            author=None,
+            message=message,
+            is_system=True
+        )
+        comment.save()
+    except Exception:
+        pass
+
+class ProjectCommentListView(APIView):
+    def get(self, request, project_id):
+        try:
+            project = Project.objects.get(id=project_id)
+        except Exception:
+            return Response({'error': 'Project not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        comments = ProjectComment.objects(project=project).order_by('created_at')
+        return Response([c.to_dict() for c in comments], status=status.HTTP_200_OK)
+
+    def post(self, request, project_id):
+        try:
+            project = Project.objects.get(id=project_id)
+        except Exception:
+            return Response({'error': 'Project not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        message = request.data.get('message')
+        parent_id = request.data.get('parent_id')
+
+        if not message:
+            return Response({'error': 'Message is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        parent = None
+        if parent_id:
+            try:
+                parent = ProjectComment.objects.get(id=parent_id)
+            except Exception:
+                return Response({'error': 'Parent comment not found'}, status=status.HTTP_400_BAD_REQUEST)
+
+        comment = ProjectComment(
+            project=project,
+            author=request.user,
+            message=message,
+            parent=parent,
+            is_system=False
+        )
+        comment.save()
+        return Response(comment.to_dict(), status=status.HTTP_201_CREATED)
+
+class CommentDetailView(APIView):
+    def put(self, request, pk):
+        try:
+            comment = ProjectComment.objects.get(id=pk)
+        except Exception:
+            return Response({'error': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check permissions: author of the comment or admin or project manager
+        if comment.author != request.user and request.user.role not in ['admin', 'project_manager']:
+            return Response({'error': 'You do not have permission to edit this comment.'}, status=status.HTTP_403_FORBIDDEN)
+
+        message = request.data.get('message')
+        if not message:
+            return Response({'error': 'Message content is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        comment.message = message
+        comment.updated_at = datetime.utcnow()
+        comment.save()
+        return Response(comment.to_dict(), status=status.HTTP_200_OK)
+
+    def delete(self, request, pk):
+        try:
+            comment = ProjectComment.objects.get(id=pk)
+        except Exception:
+            return Response({'error': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check permissions: author or admin or project manager
+        if comment.author != request.user and request.user.role not in ['admin', 'project_manager']:
+            return Response({'error': 'You do not have permission to delete this comment.'}, status=status.HTTP_403_FORBIDDEN)
+
+        # Delete all replies recursively
+        ProjectComment.objects(parent=comment).delete()
+        comment.delete()
+        return Response({'success': True}, status=status.HTTP_200_OK)
+

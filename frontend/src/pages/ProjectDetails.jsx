@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { dataService } from '../services/dataService';
-import { ArrowLeft, Edit2, Trash2, Plus, X, MessageSquare } from 'lucide-react';
+import ProjectDiscussion from '../components/ProjectDiscussion';
+import { ArrowLeft, Edit2, Trash2, Plus, X, MessageSquare, ListTodo } from 'lucide-react';
 
 const TASK_STATUSES = ['not_started','in_progress','under_review','completed'];
 const PRIORITIES = ['low','medium','high','critical'];
@@ -95,6 +96,7 @@ export default function ProjectDetails() {
   const [savingProject, setSavingProject] = useState(false);
 
   const canManage = ['admin','project_manager'].includes(user?.role);
+  const [activeTab, setActiveTab] = useState('tasks');
 
   useEffect(() => {
     Promise.all([dataService.projects.get(id), dataService.tasks.listByProject(id), dataService.team.list()])
@@ -176,7 +178,36 @@ export default function ProjectDetails() {
 
       {project.description && <div className="card"><div style={{ fontSize:12, fontWeight:700, color:'#5F6B7A', marginBottom:8, textTransform:'uppercase', letterSpacing:'0.04em' }}>Description</div><div style={{ fontSize:13, color:'#16191F', lineHeight:1.6 }}>{project.description}</div></div>}
 
-      {/* Tasks */}
+      {/* Tab switcher */}
+      <div style={{ display:'flex', gap:0, borderBottom:'2px solid #D5DBDB' }}>
+        <button
+          onClick={() => setActiveTab('tasks')}
+          style={{
+            display:'flex', alignItems:'center', gap:6, padding:'8px 20px',
+            fontSize:13, fontWeight:600, cursor:'pointer', background:'transparent',
+            border:'none', borderBottom: activeTab==='tasks' ? '2px solid #FF9900' : '2px solid transparent',
+            color: activeTab==='tasks' ? '#FF9900' : '#5F6B7A',
+            marginBottom:'-2px', transition:'all 0.2s'
+          }}
+        >
+          <ListTodo size={14}/> Tasks ({tasks.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('discussion')}
+          style={{
+            display:'flex', alignItems:'center', gap:6, padding:'8px 20px',
+            fontSize:13, fontWeight:600, cursor:'pointer', background:'transparent',
+            border:'none', borderBottom: activeTab==='discussion' ? '2px solid #FF9900' : '2px solid transparent',
+            color: activeTab==='discussion' ? '#FF9900' : '#5F6B7A',
+            marginBottom:'-2px', transition:'all 0.2s'
+          }}
+        >
+          <MessageSquare size={14}/> Discussion
+        </button>
+      </div>
+
+      {/* Tasks panel */}
+      {activeTab === 'tasks' && (
       <div className="card" style={{ padding:0 }}>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 20px', borderBottom:'1px solid #D5DBDB' }}>
           <div style={{ fontSize:14, fontWeight:700, color:'#16191F' }}>Tasks ({tasks.length})</div>
@@ -232,6 +263,14 @@ export default function ProjectDetails() {
           );
         })}
       </div>
+      )}
+
+      {/* Discussion panel */}
+      {activeTab === 'discussion' && (
+        <div className="card" style={{ padding:0, overflow:'hidden' }}>
+          <ProjectDiscussion projectId={id} teamMembers={teamMembers} />
+        </div>
+      )}
 
       {showTaskModal && <TaskModal projectId={id} teamMembers={teamMembers} onClose={()=>setShowTaskModal(false)} onSaved={handleTaskSaved} />}
       {editingTask && <TaskModal existing={editingTask} projectId={id} teamMembers={teamMembers} onClose={()=>setEditingTask(null)} onSaved={handleTaskSaved} />}
