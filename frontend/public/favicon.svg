@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="falconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB800" />
+      <stop offset="100%" stop-color="#FF9900" />
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#232F3E" />
+      <stop offset="100%" stop-color="#16191F" />
+    </linearGradient>
+  </defs>
+  <!-- Main Shield Background -->
+  <path d="M50 10 L85 30 L85 65 C85 80 50 92 50 92 C50 92 15 80 15 65 L15 30 Z" fill="url(#shieldGrad)" stroke="#FF9900" stroke-width="4" stroke-linejoin="round"/>
+  <!-- Stylized Winged Falcon (Skyfalke) -->
+  <path d="M50 28 L72 38 L60 48 L50 42 L40 48 L28 38 Z" fill="url(#falconGrad)"/>
+  <path d="M50 45 L68 53 L50 68 L32 53 Z" fill="url(#falconGrad)"/>
+  <circle cx="50" cy="78" r="4" fill="#FF9900" />
+</svg>
