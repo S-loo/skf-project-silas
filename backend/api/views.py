@@ -46,6 +46,24 @@ class RegisterView(APIView):
         if not all([email, password, first_name, last_name]):
             return Response({'error': 'All fields are required'}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Validate password length
+        if len(password) < 6:
+            return Response({'error': 'Password must be at least 6 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate password complexity (mixture of letters and non-letters)
+        has_letter = any(c.isalpha() for c in password)
+        has_non_letter = any(not c.isalpha() for c in password)
+        if not (has_letter and has_non_letter):
+            return Response({'error': 'Password must contain a mixture of letters and numbers/special characters.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Reject Project Manager registration from public registration endpoint
+        if role == 'project_manager':
+            return Response({'error': 'Project Manager role cannot be selected from registration.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Enforce that only one Project Manager can exist in the system
+        if User.objects(role='project_manager').first() and role == 'project_manager':
+            return Response({'error': 'A Project Manager already exists in the system.'}, status=status.HTTP_400_BAD_REQUEST)
+
         if User.objects(email=email).first():
             return Response({'error': 'Email already exists'}, status=status.HTTP_400_BAD_REQUEST)
 

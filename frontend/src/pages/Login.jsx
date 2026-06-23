@@ -35,6 +35,18 @@ export default function Login() {
         return;
       }
 
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters long.');
+        return;
+      }
+
+      const hasLetter = /[a-zA-Z]/.test(password);
+      const hasNonLetter = /[^a-zA-Z]/.test(password);
+      if (!hasLetter || !hasNonLetter) {
+        setError('Password must contain a mixture of letters and numbers/special characters.');
+        return;
+      }
+
       setLoading(true);
       try {
         await register(email, password, firstName, lastName, role);
@@ -148,7 +160,7 @@ export default function Login() {
                   className="form-input"
                 >
                   <option value="developer">Developer</option>
-                  <option value="project_manager">Project Manager</option>
+                  <option value="viewer">Viewer</option>
                   <option value="admin">Administrator</option>
                 </select>
               </>
